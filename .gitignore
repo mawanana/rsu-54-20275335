@@ -1,0 +1,44 @@
+# Ignore compiled Python files
+__pycache__/
+*.pyc
+
+# Ignore logs
+logs/**
+
+# Ignore airflow configuration files
+airflow.cfg
+
+# Ignore the Airflow database
+airflow.db
+
+# Ignore temporary files and directories
+*.swp
+*.swo
+*.log
+*.pid
+*.state
+*.retry
+
+# Ignore virtual environment directories (if using virtualenv)
+venv/
+python_dev/
+.env
+
+# Ignore project-specific sensitive information (e.g., credentials)
+secrets.yaml
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore editor-specific files (e.g., Visual Studio Code, PyCharm, etc.)
+.vscode/
+.idea/
+.idea/workspace.xml
+
+# Ignore the "dist" directory (if your project is packaged)
+dist/
+
+# Ignore any other build or cache directories
+__pycache__/
+.cache/
