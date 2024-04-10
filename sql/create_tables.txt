@@ -14,7 +14,10 @@ CREATE TABLE `cricket_info`.matches (
     team_2_score INT,
     team_2_wicket INT,
     team_2_over VARCHAR(255),
-    total_over INT,
+	team_1_total_over VARCHAR(255),
+    team_2_total_over VARCHAR(255),
+    first_bat_team VARCHAR(255),
+    second_bat_team VARCHAR(255),
     harvest_status VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
