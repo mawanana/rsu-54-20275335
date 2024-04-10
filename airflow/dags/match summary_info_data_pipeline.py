@@ -48,9 +48,9 @@ def score_data_scrapeing(**kwargs):
     df = kwargs['task_instance'].xcom_pull(task_ids='get_match_url')
     scraped_data = []
     # -----use for test propo-----
-    # Slice the DataFrame to only include rows with index from 2000 to 2100
-    df = df.iloc[2000:2101]
-    # -----use for test propo-----
+    # # Slice the DataFrame to only include rows with index from 2000 to 2100
+    # df = df.iloc[2000:2201]
+    # # -----use for test propo-----
 
     for index, row in df.iterrows():
         url = 'https://www.espncricinfo.com{}'.format(row['url'])
