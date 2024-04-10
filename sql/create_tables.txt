@@ -1,0 +1,21 @@
+CREATE TABLE `cricket_info`.matches (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    team_1 VARCHAR(255),
+    team_2 VARCHAR(255),
+    winner VARCHAR(255),
+    margin VARCHAR(255),
+    ground VARCHAR(255),
+    match_date VARCHAR(255),
+    match_id VARCHAR(255),
+	url VARCHAR(255),
+    team_1_score INT,
+    team_1_wicket INT,
+    team_1_over VARCHAR(255),
+    team_2_score INT,
+    team_2_wicket INT,
+    team_2_over VARCHAR(255),
+    total_over INT,
+    harvest_status VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
