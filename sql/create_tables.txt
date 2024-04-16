@@ -22,3 +22,26 @@ CREATE TABLE `cricket_info`.matches (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE `cricket_info`.batting (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    match_id VARCHAR(255),
+    team VARCHAR(255),
+    opposite_team VARCHAR(255),
+    player VARCHAR(255),
+    profile_url VARCHAR(255),
+    batting_position VARCHAR(255),
+    captain VARCHAR(255),
+    wicket_keeper VARCHAR(255),
+    dismissal_method VARCHAR(255),
+    bowler VARCHAR(255),
+    dismissal_participate_player VARCHAR(255),
+    runs VARCHAR(255),
+    balls VARCHAR(255),
+    minutes VARCHAR(255),
+    fours VARCHAR(255),
+    sixes VARCHAR(255),
+    strike_rate VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

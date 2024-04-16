@@ -2,6 +2,104 @@ import pandas as pd
 
 from airflow.hooks.mysql_hook import MySqlHook
 
+def insert_batting_data(dataframe):
+    print(dataframe)
+    print(dataframe.columns)
+
+    try:
+        # Create a MySqlHook instance to get the MySQL connection
+        mysql_hook = MySqlHook("mysql_conn_id")
+        mysql_connection = mysql_hook.get_conn()
+
+        # Create a cursor for database operations
+        cursor = mysql_connection.cursor()
+        print("22222")
+        # Iterate over each row in the DataFrame
+        for index, row in dataframe.iterrows():
+            print("22222")
+            # Extract data from the DataFrame row
+            match_id = row['match_id']
+            team = row['team']
+            opposite_team = row['opposite_team']
+            player = row['player']
+            profile_url = row['url']
+            batting_position = row['batting_position']
+            captain = row['captain']
+            wicket_keeper = row['wicket_keeper']
+            dismissal_method = row['dismissal_method']
+            bowler = row['bowler']
+            dismissal_participate_player = row['dismissal_participate_player']
+            runs = row['runs']
+            balls = row['balls']
+            minutes = row['minutes']
+            fours = row['fours']
+            sixes = row['sixes']
+            strike_rate = row['strike_rate']
+
+            # Define the SQL query to insert data into the table
+            sql_query = """
+            INSERT INTO cricket_info.batting (
+                match_id, team, opposite_team, player, profile_url, batting_position,
+                captain, wicket_keeper, dismissal_method, bowler, dismissal_participate_player,
+                runs, balls, minutes, fours, sixes, strike_rate
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
+
+            # Execute the query
+            cursor.execute(sql_query, (
+                match_id, team, opposite_team, player, profile_url, batting_position,
+                captain, wicket_keeper, dismissal_method, bowler, dismissal_participate_player,
+                runs, balls, minutes, fours, sixes, strike_rate
+            ))
+
+        # Commit the transaction
+        mysql_connection.commit()
+
+        # Close cursor and database connection
+        cursor.close()
+        mysql_connection.close()
+
+        print("Data inserted successfully.")
+
+    except Exception as e:
+        print(f"Error: {str(e)}")
+
+def get_matchs_data_batting():
+    try:
+        # Create a MySqlHook instance to get the MySQL connection
+        mysql_hook = MySqlHook("mysql_conn_id")
+        mysql_connection = mysql_hook.get_conn()
+
+        # Create a cursor for database operations
+        cursor = mysql_connection.cursor()
+
+        # Define the SQL query to retrieve data
+        sql_query = """
+        SELECT match_id, first_bat_team, second_bat_team, url
+        FROM cricket_info.matches
+        WHERE harvest_status = 'match summary harvested';
+        """
+
+        # Execute the query
+        cursor.execute(sql_query)
+
+        # Fetch all rows from the result set
+        rows = cursor.fetchall()
+
+        # Close cursor and database connection
+        cursor.close()
+        mysql_connection.close()
+
+        # Convert the fetched data into a DataFrame
+        columns = ['match_id', 'first_bat_team', 'second_bat_team', 'url']
+        df = pd.DataFrame(rows, columns=columns)
+
+        return df
+
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return None
+
 def insert_match_summary_data(dataframe):
     # Create a MySqlHook instance to get the MySQL connection
     mysql_hook = MySqlHook("mysql_conn_id")
