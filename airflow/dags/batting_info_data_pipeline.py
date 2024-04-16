@@ -51,9 +51,9 @@ def batting_data_scrapeing(**kwargs):
     print(df.columns)
 
     scraped_data = []
-    # -----use for test propo-----
-    # Slice the DataFrame to only include rows with index from 2000 to 2100
-    df = df.iloc[2350:2440]
+    # # -----use for test propo-----
+    # # Slice the DataFrame to only include rows with index from 2000 to 2100
+    # df = df.iloc[2350:2440]
     # # -----use for test propo-----
     for index1, row1 in df.iterrows():
         url = 'https://www.espncricinfo.com{}'.format(row1['url'])
