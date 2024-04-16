@@ -3,9 +3,6 @@ import pandas as pd
 from airflow.hooks.mysql_hook import MySqlHook
 
 def insert_batting_data(dataframe):
-    print(dataframe)
-    print(dataframe.columns)
-
     try:
         # Create a MySqlHook instance to get the MySQL connection
         mysql_hook = MySqlHook("mysql_conn_id")
@@ -13,16 +10,15 @@ def insert_batting_data(dataframe):
 
         # Create a cursor for database operations
         cursor = mysql_connection.cursor()
-        print("22222")
+
         # Iterate over each row in the DataFrame
         for index, row in dataframe.iterrows():
-            print("22222")
             # Extract data from the DataFrame row
             match_id = row['match_id']
             team = row['team']
             opposite_team = row['opposite_team']
             player = row['player']
-            profile_url = row['url']
+            profile_url = row['profile_url']
             batting_position = row['batting_position']
             captain = row['captain']
             wicket_keeper = row['wicket_keeper']

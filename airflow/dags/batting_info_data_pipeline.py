@@ -48,14 +48,16 @@ task_01 = PythonOperator(
 # Task 02: Scrape data from URL
 def batting_data_scrapeing(**kwargs):
     df = kwargs['task_instance'].xcom_pull(task_ids='get_match_info')
+    print(df.columns)
+
     scraped_data = []
     # -----use for test propo-----
     # Slice the DataFrame to only include rows with index from 2000 to 2100
-    df = df.iloc[2400:2405]
+    df = df.iloc[2350:2440]
     # # -----use for test propo-----
     for index1, row1 in df.iterrows():
         url = 'https://www.espncricinfo.com{}'.format(row1['url'])
-        print("##############", url)
+        print("##############", row1['match_id'],"--->", url)
 
         # Send a GET request to the URL
         response = requests.get(url)
@@ -71,23 +73,6 @@ def batting_data_scrapeing(**kwargs):
             # Loop through each scorecard table
             for index, table in enumerate(scorecard_tables):
 
-                # Find all <td> tags within the table soup
-                all_td_tags = table.find_all('td')
-                # Filter <td> tags containing text with "(c)"
-                td_with_c = [td for td in all_td_tags if '(c)' in td.get_text(strip=True)]
-                # Extract text from each filtered <td> tag
-                for td in td_with_c:
-                    captain = td.get_text(strip=True)
-                    captain = captain.replace("(c)", "").strip()
-                    captain = captain.replace("†", "").strip()
-
-                td_with_w = [td for td in all_td_tags if '†' in td.get_text(strip=True)]
-                # Extract text from each filtered <td> tag
-                for td in td_with_w:
-                    wicket_keeper = td.get_text(strip=True)
-                    wicket_keeper = wicket_keeper.replace("(c)", "").strip()
-                    wicket_keeper = wicket_keeper.replace("†", "").strip()
-
                 # Get all table rows (excluding the first one, which usually contains column headers)
                 rows = table.find_all('tr')[1:]
 
@@ -97,9 +82,24 @@ def batting_data_scrapeing(**kwargs):
 
                 # Loop through each row
                 for row in rows:
-
                     # Get all table data cells in this row
                     cells = row.find_all('td')
+                    if '†' in cells[0].get_text(strip=True):
+                        wicket_keeper = cells[0].get_text(strip=True)
+                        if ',' in wicket_keeper:
+                            wicket_keeper = wicket_keeper.split('†')[0].split(',')[-1].strip()
+                        wicket_keeper = wicket_keeper.replace("(c)", "").strip()
+                        wicket_keeper = wicket_keeper.replace("†", "").strip()
+                        wicket_keeper = wicket_keeper.replace("Did not bat:", "").strip()
+
+                    if '(c)' in cells[0].get_text(strip=True):
+                        captain = cells[0].get_text(strip=True)
+                        if ',' in captain:
+                            captain = captain.split('(c)')[0].split(',')[-1].strip()
+                        captain = captain.replace("†", "").strip()
+                        captain = captain.replace("(c)", "").strip()
+                        captain = captain.replace("Did not bat:", "").strip()
+
 
                     # Extract text from each cell and store in variables
                     data = [cell.text.strip() for cell in cells]
@@ -165,6 +165,7 @@ def transform_data(**kwargs):
     transformed_data =[]
     print(scraped_df)
     for index, row in scraped_df.iterrows():
+        print("========>>>>>", row['match_id'])
         print(row['dismissal'])
         players_list = scraped_df[scraped_df['match_id'] == row['match_id']]['player'].unique()
         print(players_list)
@@ -196,15 +197,34 @@ def transform_data(**kwargs):
         if 'run out' in row['dismissal']:
             dismissal_method = 'run out'
             bowler = '-'
-            dismissal_participate_player = row['dismissal'].split('(')[1].split(')')[0].strip()
+            if '(' in row['dismissal']:
+                dismissal_participate_player = row['dismissal'].split('(')[1].split(')')[0].strip()
+                dismissal_participate_player = find_most_matching_name(dismissal_participate_player, players_list)
+            else:
+                dismissal_participate_player = '-'
+        if 'st ' in row['dismissal']:
+            dismissal_method = 'stumped'
+            bowler = row['dismissal'].split('b ')[1].strip()
+            bowler = find_most_matching_name(bowler, players_list)
+            dismissal_participate_player = row['dismissal'].split('b ')[0].split('st ')[1].strip()
             dismissal_participate_player = find_most_matching_name(dismissal_participate_player, players_list)
-
-
         print(row['dismissal'], ">>>>>", dismissal_method, "====", bowler, "====", dismissal_participate_player)
-        transformed_data.append([row['match_id'], row['team'], row['opposite_team'], row['player'], row['url'], row['batting_position'], row['captain'], row['wicket_keeper'], dismissal_method, bowler, dismissal_participate_player, row['runs'], row['balls'], row['minutes'], row['fours'], row['sixes'], row['strike_rate']])
+
+
+        player = row['player']
+        player = player.replace("(c)", "").strip()
+        player = player.replace("†", "").strip()
+
+        bowler = bowler.replace("(c)", "").strip()
+        bowler = bowler.replace("†", "").strip()
+
+        dismissal_participate_player = dismissal_participate_player.replace("(c)", "").strip()
+        dismissal_participate_player = dismissal_participate_player.replace("†", "").strip()
+
+        transformed_data.append([row['match_id'], row['team'], row['opposite_team'], player, row['profile_url'], row['batting_position'], row['captain'], row['wicket_keeper'], dismissal_method, bowler, dismissal_participate_player, row['runs'], row['balls'], row['minutes'], row['fours'], row['sixes'], row['strike_rate']])
 
     # Define column headers
-    columns = ['match_id', 'team', 'opposite_team', 'player', 'url', 'batting_position', 'captain', 'wicket_keeper', 'dismissal_method', 'bowler', 'dismissal_participate_player', 'runs', 'balls', 'minutes', 'fours', 'sixes', 'strike_rate']
+    columns = ['match_id', 'team', 'opposite_team', 'player', 'profile_url', 'batting_position', 'captain', 'wicket_keeper', 'dismissal_method', 'bowler', 'dismissal_participate_player', 'runs', 'balls', 'minutes', 'fours', 'sixes', 'strike_rate']
 
     # Convert to DataFrame
     transformed_df = pd.DataFrame(transformed_data, columns=columns)
