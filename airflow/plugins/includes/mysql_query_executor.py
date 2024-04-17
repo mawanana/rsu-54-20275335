@@ -2,6 +2,56 @@ import pandas as pd
 
 from airflow.hooks.mysql_hook import MySqlHook
 
+def insert_bowling_wickets_data(dataframe):
+    try:
+        # Create a MySqlHook instance to get the MySQL connection
+        mysql_hook = MySqlHook("mysql_conn_id")
+        mysql_connection = mysql_hook.get_conn()
+
+        # Create a cursor for database operations
+        cursor = mysql_connection.cursor()
+
+        # Iterate over each row in the DataFrame
+        for index, row in dataframe.iterrows():
+            # Extract data from the DataFrame row
+            match_id = row['match_id']
+            team = row['team']
+            opposite_team = row['opposite_team']
+            player = row['player']
+            profile_url = row['profile_url']
+            overs = row['overs']
+            out_player = row['out_player']
+            runs = row['runs']
+            wicket_position = row['wicket_position']
+            total_wickets = row['total_wickets']
+            bowling_position = row['bowling_position']
+
+            # Define the SQL query to insert data into the table
+            sql_query = """
+            INSERT INTO cricket_info.bowling_wickets (
+                match_id, team, opposite_team, player, profile_url, bowling_position, overs,
+                out_player, runs, wicket_position, total_wickets
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
+
+            # Execute the query
+            cursor.execute(sql_query, (
+                match_id, team, opposite_team, player, profile_url, bowling_position, overs,
+                out_player, runs, wicket_position, total_wickets
+            ))
+
+        # Commit the transaction
+        mysql_connection.commit()
+
+        # Close cursor and database connection
+        cursor.close()
+        mysql_connection.close()
+
+        print("Data inserted successfully.")
+
+    except Exception as e:
+        print(f"Error: {str(e)}")
+
 def insert_bowling_data(dataframe):
     try:
         # Create a MySqlHook instance to get the MySQL connection

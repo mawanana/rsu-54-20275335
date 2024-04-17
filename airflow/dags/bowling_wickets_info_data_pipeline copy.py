@@ -7,8 +7,7 @@ from bs4 import BeautifulSoup
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 
-# from includes.match_name import find_most_matching_name
-from includes.mysql_query_executor import get_matchs_data_bowling, insert_bowling_data
+from includes.mysql_query_executor import get_matchs_data_bowling, insert_bowling_wickets_data
 
 # Define default arguments
 default_args = {
@@ -22,7 +21,7 @@ default_args = {
 
 # Define DAG
 dag = DAG(
-    'bowling_info_data_pipeline',
+    'bowling_wickets_info_data_pipeline',
     default_args=default_args,
     description='A DAG to handle match summary info data pipeline',
     schedule_interval=None,  # This example runs manually
@@ -46,18 +45,18 @@ task_01 = PythonOperator(
 )
 
 # Task 02: Scrape data from URL
-def bowling_data_scrapeing(**kwargs):
+def bowling_wickets_data_scrapeing(**kwargs):
     df = kwargs['task_instance'].xcom_pull(task_ids='get_match_info')
     print(df.columns)
 
     scraped_data = []
-    # # -----use for test propo-----
-    # # Slice the DataFrame to only include rows with index from 2000 to 2100
-    # df = df.iloc[2350:2355]
-    # # -----use for test propo-----
+    # -----use for test propo-----
+    # Slice the DataFrame to only include rows with index from 2000 to 2100
+    df = df.iloc[2350:2355]
+    # -----use for test propo-----
     for index1, row1 in df.iterrows():
         url = 'https://www.espncricinfo.com{}'.format(row1['url'])
-        print("##############", row1['match_id'],"--->", url)
+        print("##############", row1['match_id'], "--->", url)
 
         # Send a GET request to the URL
         response = requests.get(url)
@@ -82,25 +81,29 @@ def bowling_data_scrapeing(**kwargs):
 
                 # Loop through each row
                 for row in rows:
-                    print("00--->", row.get_text(strip=True))
                     # Get all table data cells in this row
                     cells = row.find_all('td')
-
                     # Extract text from each cell and store in variables
                     data = [cell.text.strip() for cell in cells]
-
                     # Check if the row is valid (not 'Extras', 'TOTAL', and has 8 elements)
                     if len(data) == 11:
                         bowling_position += 1
-                        # add bowling_position
-                        data.append(str(bowling_position))
-                        # add batman url
-                        data.append(row.find('a').get('href').strip())
-                        # Append the valid row to the data list
-                        data_list.append(data)
+                        player = data[0].strip()
+                        profile_url = row.find('a').get('href').strip()
 
-                print(data_list)
+                    else:
+                        div_tags = row.find_all("div", class_="ds-mb-2")
+                        # Extract text from each cell and store in variables
+                        data1 = [div_tag.text.strip() for div_tag in div_tags]
+                        for x in data1:
+                            total_wickets = str(len(data1))
+                            if ' to ' in  x.strip():
+                                overs = x.split(' to ')[0].strip()
+                                out_player = x.split(' to ')[1].split(',')[0].strip()
+                                runs = x.split(', .')[1].split('/')[0].strip()
+                                wicket_position = x.split('/')[1].strip()
 
+                                data_list.append([player, profile_url, bowling_position, overs, out_player, runs, wicket_position, total_wickets])
 
                 if index == 0:
                     team_name = row1['second_bat_team']
@@ -110,17 +113,15 @@ def bowling_data_scrapeing(**kwargs):
                     opposite_team = row1['second_bat_team']
 
                 for sublist in data_list:
-                    sublist.extend([team_name, opposite_team, row1['match_id']])
-                    # print(sublist)
+                    sublist.extend([ row1['match_id'], team_name, opposite_team])
                     scraped_data.append(sublist)
-                print("00", data_list)
 
 
         else:
             print("Failed to retrieve the webpage. Status code:", response.status_code)
 
     # Define column headers
-    columns = ["player", "overs", "maidens", "runs", "wickets", "economy_rate", "dot", "fours", "sixes", "wide_balls", "no_balls", "bowling_position", "profile_url", "team", "opposite_team", "match_id"]
+    columns = ["player", "profile_url", "bowling_position", "overs", "out_player", "runs", "wicket_position", "total_wickets", "match_id", "team", "opposite_team"]
 
     # Convert to DataFrame
     scraped_df = pd.DataFrame(scraped_data, columns=columns)
@@ -128,15 +129,15 @@ def bowling_data_scrapeing(**kwargs):
     return scraped_df
 
 task_02 = PythonOperator(
-    task_id='bowling_data_scrapeing',
-    python_callable=bowling_data_scrapeing,
+    task_id='bowling_wickets_data_scrapeing',
+    python_callable=bowling_wickets_data_scrapeing,
     dag=dag,
 )
 
 # Task 04: Insert transformed data to MySQL
 def insert_transformed_data_to_mysql(**kwargs):
-    transformed_df = kwargs['ti'].xcom_pull(task_ids='bowling_data_scrapeing')
-    insert_bowling_data(transformed_df)
+    scraped_df = kwargs['ti'].xcom_pull(task_ids='bowling_wickets_data_scrapeing')
+    insert_bowling_wickets_data(scraped_df)
 
 task_04 = PythonOperator(
     task_id='insert_transformed_data_to_mysql',
