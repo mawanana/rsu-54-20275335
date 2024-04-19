@@ -52,7 +52,7 @@ def bowling_wickets_data_scrapeing(**kwargs):
     scraped_data = []
     # # -----use for test propo-----
     # # Slice the DataFrame to only include rows with index from 2000 to 2100
-    # df = df.iloc[0:5]
+    # df = df.iloc[0:50]
     # # -----use for test propo-----
     for index1, row1 in df.iterrows():
         url = 'https://www.espncricinfo.com{}'.format(row1['url'])
@@ -100,8 +100,8 @@ def bowling_wickets_data_scrapeing(**kwargs):
                             if ' to ' in  x.strip():
                                 overs = x.split(' to ')[0].strip()
                                 out_player = x.split(' to ')[1].split(',')[0].strip()
-                                runs = x.split('. ')[1].split('/')[0].strip()
-                                wicket_position = x.split('/')[1].strip()
+                                runs = x.rsplit(".", 1)[-1].split('/')[0].strip()
+                                wicket_position = x.rsplit("/", 1)[-1].strip()
 
                                 data_list.append([player, profile_url, bowling_position, overs, out_player, runs, wicket_position, total_wickets])
 
