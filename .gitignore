@@ -14,4 +14,6 @@ airflow/plugins/includes/__pycache__
 airflow/__pycache__
 
 venv/
+t20s_male_json/
+json_data/
 airflow/dags/__pycache__
