@@ -2,6 +2,84 @@ import pandas as pd
 
 from airflow.hooks.mysql_hook import MySqlHook
 
+def get_matchs_data_ball_by_ball():
+    try:
+        # Create a MySqlHook instance to get the MySQL connection
+        mysql_hook = MySqlHook("mysql_conn_id")
+        mysql_connection = mysql_hook.get_conn()
+
+        # Create a cursor for database operations
+        cursor = mysql_connection.cursor()
+
+        # Define the SQL query to retrieve data from matches table
+        matches_query = """
+        SELECT match_id, first_bat_team, second_bat_team, url
+        FROM cricket_info.matches
+        WHERE harvest_status = 'match summary harvested';
+        """
+
+        # Execute the query to fetch matches data
+        cursor.execute(matches_query)
+        matches_rows = cursor.fetchall()
+
+        # Close cursor
+        cursor.close()
+
+        # Convert the fetched matches data into a DataFrame
+        matches_columns = ['match_id', 'first_bat_team', 'second_bat_team', 'url']
+        matches_df = pd.DataFrame(matches_rows, columns=matches_columns)
+
+        # Initialize empty lists to store player data
+        first_bat_team_players = []
+        second_bat_team_players = []
+
+        # Iterate through matches data to fetch player data from batting table
+        for index, row in matches_df.iterrows():
+            match_id = row['match_id']
+            first_bat_team = row['first_bat_team']
+            second_bat_team = row['second_bat_team']
+
+            # Define SQL queries for fetching player data for each team
+            first_bat_query = f"""
+            SELECT player
+            FROM cricket_info.batting
+            WHERE match_id = '{match_id}' AND team = '{first_bat_team}';
+            """
+
+            second_bat_query = f"""
+            SELECT player
+            FROM cricket_info.batting
+            WHERE match_id = '{match_id}' AND team = '{second_bat_team}';
+            """
+
+            # Execute queries to fetch player data
+            cursor = mysql_connection.cursor()
+            cursor.execute(first_bat_query)
+            first_bat_rows = cursor.fetchall()
+            first_bat_players = [player[0] for player in first_bat_rows]
+            first_bat_team_players.append(first_bat_players)
+
+            cursor.execute(second_bat_query)
+            second_bat_rows = cursor.fetchall()
+            second_bat_players = [player[0] for player in second_bat_rows]
+            second_bat_team_players.append(second_bat_players)
+
+            # Close cursor
+            cursor.close()
+
+        # Add player data to matches DataFrame
+        matches_df['first_bat_team_players'] = first_bat_team_players
+        matches_df['second_bat_team_players'] = second_bat_team_players
+
+        # Close database connection
+        mysql_connection.close()
+        print(matches_df)
+        return matches_df
+
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return None
+
 def insert_bowling_wickets_data(dataframe):
     try:
         # Create a MySqlHook instance to get the MySQL connection

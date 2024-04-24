@@ -84,3 +84,18 @@ CREATE TABLE `cricket_info`.bowling_wickets (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE `cricket_info`.ball_by_ball (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    match_id VARCHAR(255),
+    team VARCHAR(255),
+    opposite_team VARCHAR(255),
+    ball VARCHAR(255),
+    runs VARCHAR(255),
+    other_info VARCHAR(255),
+    bowling_player VARCHAR(255),
+    batting_player VARCHAR(255),
+    shorts VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

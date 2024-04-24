@@ -2,7 +2,7 @@
 
 # Define variables
 AIRFLOW_VERSION="2.7.0"
-IMAGE_NAME="msc-ds-7029-20275335-airflow-image"
+IMAGE_NAME="hemp-airflow-image"
 DOCKERFILE_PATH="./Dockerfile"
 COMPOSE_FILE="docker-compose.yaml"
 
