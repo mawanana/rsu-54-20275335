@@ -14,8 +14,88 @@ CREATE TABLE `cricket_info`.matches (
     team_2_score INT,
     team_2_wicket INT,
     team_2_over VARCHAR(255),
-    total_over INT,
+	team_1_total_over VARCHAR(255),
+    team_2_total_over VARCHAR(255),
+    first_bat_team VARCHAR(255),
+    second_bat_team VARCHAR(255),
     harvest_status VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE `cricket_info`.batting (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    match_id VARCHAR(255),
+    team VARCHAR(255),
+    opposite_team VARCHAR(255),
+    player VARCHAR(255),
+    profile_url VARCHAR(255),
+    batting_position VARCHAR(255),
+    captain VARCHAR(255),
+    wicket_keeper VARCHAR(255),
+    dismissal_method VARCHAR(255),
+    bowler VARCHAR(255),
+    dismissal_participate_player VARCHAR(255),
+    runs VARCHAR(255),
+    balls VARCHAR(255),
+    minutes VARCHAR(255),
+    fours VARCHAR(255),
+    sixes VARCHAR(255),
+    strike_rate VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE `cricket_info`.bowling (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    match_id VARCHAR(255),
+    team VARCHAR(255),
+    opposite_team VARCHAR(255),
+    player VARCHAR(255),
+    profile_url VARCHAR(255),
+    overs VARCHAR(255),
+    maidens VARCHAR(255),
+    runs VARCHAR(255),
+    wickets VARCHAR(255),
+    economy_rate VARCHAR(255),
+    dot VARCHAR(255),
+    fours VARCHAR(255),
+    sixes VARCHAR(255),
+    wide_balls VARCHAR(255),
+    no_balls VARCHAR(255),
+    bowling_position VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE `cricket_info`.bowling_wickets (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    match_id VARCHAR(255),
+    team VARCHAR(255),
+    opposite_team VARCHAR(255),
+    player VARCHAR(255),
+    profile_url VARCHAR(255),
+    bowling_position VARCHAR(255),
+    overs VARCHAR(255),
+    out_player VARCHAR(255),
+    runs VARCHAR(255),
+    wicket_position VARCHAR(255),
+    total_wickets VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE `cricket_info`.ball_by_ball (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    match_id VARCHAR(255),
+    team VARCHAR(255),
+    opposite_team VARCHAR(255),
+    ball VARCHAR(255),
+    runs VARCHAR(255),
+    other_info VARCHAR(255),
+    bowling_player VARCHAR(255),
+    batting_player VARCHAR(255),
+    shorts VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

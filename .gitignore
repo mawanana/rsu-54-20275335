@@ -14,3 +14,4 @@ airflow/plugins/includes/__pycache__
 airflow/__pycache__
 
 venv/
+airflow/dags/__pycache__
