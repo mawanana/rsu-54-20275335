@@ -2,6 +2,52 @@ import pandas as pd
 
 from airflow.hooks.mysql_hook import MySqlHook
 
+def insert_master_data(dataframe):
+    # Create a MySqlHook instance to get the MySQL connection
+    mysql_hook = MySqlHook("mysql_conn_id")
+    mysql_connection = mysql_hook.get_conn()
+
+    try:
+        # Create a cursor for database operations
+        cursor = mysql_connection.cursor()
+
+        # Iterate over DataFrame rows and insert data into the MySQL table
+        for _, row in dataframe.iterrows():
+            # Define the SQL query for insertion
+            insert_query = """
+                INSERT INTO master (
+                    `match_id`, `date`, `city`, `winner`, `winner_method`, `winner_margin`, 
+                    `total_overs`, `player_of_match`, `team1`, `team2`, `team1_players`, 
+                    `team2_players`, `first_bat`, `first_ball`, `venue`, `inning`, `over`, 
+                    `deliveries`, `batter`, `bowler`, `runs_batter`, `extras`, `total_runs`, 
+                    `wicket_player_out`, `wicket_kind`
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
+
+            # Extracting values from the row
+            values = (
+                row['match_id'], row['date'], row['city'], row['winner'], row['winner_method'],
+                row['winner_margin'], row['total_overs'], row['player_of_match'], row['team1'],
+                row['team2'], row['team1_players'], row['team2_players'], row['first_bat'],
+                row['first_ball'], row['venue'], row['inning'], row['over'], row['deliveries'],
+                row['batter'], row['bowler'], row['runs_batter'], row['extras'], row['total_runs'],
+                row['wicket_player_out'], row['wicket_kind']
+            )
+
+            # Execute the SQL query
+            cursor.execute(insert_query, values)
+
+        # Commit the changes to the database
+        mysql_connection.commit()
+
+    except Exception as e:
+        print(f"Error: {str(e)}")
+
+    finally:
+        # Close cursor and database connection
+        cursor.close()
+        mysql_connection.close()
+
 def get_matchs_data_ball_by_ball():
     try:
         # Create a MySqlHook instance to get the MySQL connection

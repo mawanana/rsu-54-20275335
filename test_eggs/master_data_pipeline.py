@@ -1,6 +1,97 @@
 import os
 import pandas as pd
 import json
+import mysql.connector
+
+def get_mysql_connection():
+    # MySQL database connection parameters
+    config = {
+        'host': 'localhost',
+        'user': 'airflow',
+        'password': 'airflow',
+        'database': 'cricket_info'
+    }
+
+    try:
+        # Establish a connection to the MySQL database
+        connection = mysql.connector.connect(**config)
+        print("Connected to MySQL database successfully!")
+        return connection
+    except mysql.connector.Error as error:
+        print(f"Error: {error}")
+        return None
+
+
+
+def insert_master_data(dataframe, mysql_connection):
+    try:
+        # Create a cursor for database operations
+        cursor = mysql_connection.cursor()
+
+        # Iterate over DataFrame rows and insert data into the MySQL table
+        for _, row in dataframe.iterrows():
+            print("Type of 'match_id':", type(row['match_id']))
+            print("Type of 'date':", type(row['date']))
+            print("Type of 'city':", type(row['city']))
+            print("Type of 'winner':", type(row['winner']))
+            print("Type of 'winner_method':", type(row['winner_method']))
+            print("Type of 'winner_margin':", type(row['winner_margin']))
+            print("Type of 'total_overs':", type(row['total_overs']))
+            print("Type of 'player_of_match':", type(row['player_of_match']))
+            print("Type of 'team1':", type(row['team1']))
+            print("Type of 'team2':", type(row['team2']))
+            print("Type of 'team1_players':", type(row['team1_players']))
+            print("Type of 'team2_players':", type(row['team2_players']))
+            print("Type of 'first_bat':", type(row['first_bat']))
+            print("Type of 'first_ball':", type(row['first_ball']))
+            print("Type of 'venue':", type(row['venue']))
+            print("Type of 'inning':", type(row['inning']))
+            print("Type of 'over':", type(row['over']))
+            print("Type of 'deliveries':", type(row['deliveries']))
+            print("Type of 'batter':", type(row['batter']))
+            print("Type of 'bowler':", type(row['bowler']))
+            print("Type of 'runs_batter':", type(row['runs_batter']))
+            print("Type of 'extras':", type(row['extras']))
+            print("Type of 'total_runs':", type(row['total_runs']))
+            print("Type of 'wicket_player_out':", type(row['wicket_player_out']))
+            print("Type of 'wicket_kind':", type(row['wicket_kind']))
+
+            # Define the SQL query for insertion
+            insert_query = """
+                INSERT INTO master (
+                    `match_id`, `date`, `city`, `winner`, `winner_method`, `winner_margin`, 
+                    `total_overs`, `player_of_match`, `team1`, `team2`, `team1_players`, 
+                    `team2_players`, `first_bat`, `first_ball`, `venue`, `inning`, `over`, 
+                    `deliveries`, `batter`, `bowler`, `runs_batter`, `extras`, `total_runs`, 
+                    `wicket_player_out`, `wicket_kind`
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
+
+            # Extracting values from the row
+            values = (
+                row['match_id'], row['date'], row['city'], row['winner'], row['winner_method'],
+                row['winner_margin'], row['total_overs'], row['player_of_match'], row['team1'],
+                row['team2'], row['team1_players'], row['team2_players'], row['first_bat'],
+                row['first_ball'], row['venue'], row['inning'], row['over'], row['deliveries'],
+                row['batter'], row['bowler'], row['runs_batter'], row['extras'], row['total_runs'],
+                row['wicket_player_out'], row['wicket_kind']
+            )
+
+
+            # Execute the SQL query
+            cursor.execute(insert_query, values)
+
+        # Commit the changes to the database
+        mysql_connection.commit()
+
+    except Exception as e:
+        print(f"Error: {str(e)}")
+
+    finally:
+        # Close cursor (connection will be closed outside the function)
+        cursor.close()
+
+
 
 # Directory containing JSON files
 directory = 'json_data'
@@ -85,13 +176,13 @@ for file in json_files:
         try:
             if 'tie' in data['info']['outcome']['result']:
                 winner_method = 'tie'
-                winner_margin = '-'
+                winner_margin = 0
         except KeyError as e:
             pass
         try:
             if 'no result' in data['info']['outcome']['result']:
                 winner_method = 'no result'
-                winner_margin = '-'
+                winner_margin = 0
         except KeyError as e:
             pass
 
@@ -106,11 +197,11 @@ for file in json_files:
             'winner_method': winner_method,
             'winner_margin': winner_margin,
             'total_overs': data['info']['overs'],
-            'player_of_match': player_of_match,
+            'player_of_match': str(player_of_match),
             'team1': team1,
             'team2': team2,
-            'team1_players': team1_players,
-            'team2_players': team2_players,
+            'team1_players': str(team1_players),
+            'team2_players': str(team2_players),
             'first_bat': first_bat,
             'first_ball': first_ball,
             'venue': data['info']['venue']
@@ -128,7 +219,7 @@ for file in json_files:
                     inning_info = {
                         'inning': inning['team'],
                         'over': over['over'],
-                        'deliveries': str(idx + 1),
+                        'deliveries': idx + 1,
                         'batter': delivery['batter'],
                         'bowler': delivery['bowler'],
                         'runs_batter': delivery['runs']['batter'],
@@ -177,3 +268,7 @@ combined_df.to_csv('combined_data.csv', index=False)
 # Display the combined DataFrame
 print(combined_df)
 
+
+# Example usage:
+mysql_connection = get_mysql_connection()
+insert_master_data(combined_df, mysql_connection)
