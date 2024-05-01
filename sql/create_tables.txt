@@ -99,3 +99,34 @@ CREATE TABLE `cricket_info`.ball_by_ball (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE `cricket_info`.master (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    `match_id` VARCHAR(255),
+    `date` DATE,
+    `city` VARCHAR(255),
+    `winner` VARCHAR(255),
+    `winner_method` VARCHAR(255),
+    `winner_margin` INT,
+    `total_overs` INT,
+    `player_of_match` VARCHAR(255),
+    `team1` VARCHAR(255),
+    `team2` VARCHAR(255),
+    `team1_players` VARCHAR(255),
+    `team2_players` VARCHAR(255),
+    `first_bat` VARCHAR(255),
+    `first_ball` VARCHAR(255),
+    `venue` VARCHAR(255),
+    `inning` VARCHAR(255),
+    `over` INT,
+    `deliveries` INT,
+    `batter` VARCHAR(255),
+    `bowler` VARCHAR(255),
+    `runs_batter` INT,
+    `extras` INT,
+    `total_runs` INT,
+    `wicket_player_out` VARCHAR(255),
+    `wicket_kind` VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
