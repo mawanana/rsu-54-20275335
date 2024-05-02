@@ -1,0 +1,304 @@
+proved python program for do folwing thing
+01, first grup by data with this conditons
+
+
+icc_t20_teams = ["Afghanistan", "Australia", "Bangladesh", "England", "India", "New Zealand", "Pakistan", "South Africa", "Sri Lanka", "West Indies"]
+
+/Users/eranda/Documents/MyDocuments/rsu-54-20275335/venv/lib/python3.8/site-packages/sklearn/model_selection/_split.py:737: UserWarning: The least populated class in y has only 1 members, which is less than n_splits=5.
+  warnings.warn(
+
+Logistic Regression:
+Best Parameters: {'classifier__C': 10}
+Accuracy: 0.11605415860735009
+
+
+
+/Users/eranda/Documents/MyDocuments/rsu-54-20275335/venv/lib/python3.8/site-packages/sklearn/model_selection/_split.py:737: UserWarning: The least populated class in y has only 1 members, which is less than n_splits=5.
+  warnings.warn(
+
+Random Forest Classifier:
+Best Parameters: {'classifier__n_estimators': 300}
+Accuracy: 0.06963249516441006
+
+
+
+/Users/eranda/Documents/MyDocuments/rsu-54-20275335/venv/lib/python3.8/site-packages/sklearn/model_selection/_split.py:737: UserWarning: The least populated class in y has only 1 members, which is less than n_splits=5.
+  warnings.warn(
+
+Gradient Boosting Classifier:
+Best Parameters: {'classifier__learning_rate': 0.01, 'classifier__n_estimators': 50}
+Accuracy: 0.09864603481624758
+
+
+
+/Users/eranda/Documents/MyDocuments/rsu-54-20275335/venv/lib/python3.8/site-packages/sklearn/model_selection/_split.py:737: UserWarning: The least populated class in y has only 1 members, which is less than n_splits=5.
+  warnings.warn(
+
+Decision Tree Classifier:
+Best Parameters: {'classifier__max_depth': 10}
+Accuracy: 0.09864603481624758
+
+
+
+/Users/eranda/Documents/MyDocuments/rsu-54-20275335/venv/lib/python3.8/site-packages/sklearn/model_selection/_split.py:737: UserWarning: The least populated class in y has only 1 members, which is less than n_splits=5.
+  warnings.warn(
+
+Support Vector Classifier:
+Best Parameters: {'classifier__C': 10, 'classifier__gamma': 0.1}
+Accuracy: 0.11411992263056092
+
+@@@@@@@@@@icc team@@@@@@@@@@@@@@
+
+/Users/eranda/Documents/MyDocuments/rsu-54-20275335/venv/lib/python3.8/site-packages/sklearn/model_selection/_split.py:737: UserWarning: The least populated class in y has only 2 members, which is less than n_splits=5.
+  warnings.warn(
+
+Logistic Regression:
+Best Parameters: {'classifier__C': 0.1}
+Accuracy: 0.5142857142857142
+
+
+
+/Users/eranda/Documents/MyDocuments/rsu-54-20275335/venv/lib/python3.8/site-packages/sklearn/model_selection/_split.py:737: UserWarning: The least populated class in y has only 2 members, which is less than n_splits=5.
+  warnings.warn(
+
+Random Forest Classifier:
+Best Parameters: {'classifier__n_estimators': 100}
+Accuracy: 0.4
+
+
+
+/Users/eranda/Documents/MyDocuments/rsu-54-20275335/venv/lib/python3.8/site-packages/sklearn/model_selection/_split.py:737: UserWarning: The least populated class in y has only 2 members, which is less than n_splits=5.
+  warnings.warn(
+
+Gradient Boosting Classifier:
+Best Parameters: {'classifier__learning_rate': 0.01, 'classifier__n_estimators': 50}
+Accuracy: 0.45714285714285713
+
+
+
+/Users/eranda/Documents/MyDocuments/rsu-54-20275335/venv/lib/python3.8/site-packages/sklearn/model_selection/_split.py:737: UserWarning: The least populated class in y has only 2 members, which is less than n_splits=5.
+  warnings.warn(
+
+Decision Tree Classifier:
+Best Parameters: {'classifier__max_depth': 5}
+Accuracy: 0.4
+
+
+
+/Users/eranda/Documents/MyDocuments/rsu-54-20275335/venv/lib/python3.8/site-packages/sklearn/model_selection/_split.py:737: UserWarning: The least populated class in y has only 2 members, which is less than n_splits=5.
+  warnings.warn(
+
+Support Vector Classifier:
+Best Parameters: {'classifier__C': 1, 'classifier__gamma': 1}
+Accuracy: 0.45714285714285713
+
+
+2@@@@@@@@@@@@@@@@@@@@@@
+
+Logistic Regression:
+Best Parameters: {'classifier__C': 0.1}
+Accuracy: 0.5142857142857142
+Precision: 0.2857142857142857
+Recall: 0.5142857142857142
+F1 Score: 0.3619047619047619
+Classification Report:
+              precision    recall  f1-score   support
+
+   Australia       0.00      0.00      0.00         3
+     England       0.00      0.00      0.00         4
+       India       0.67      0.67      0.67         3
+ New Zealand       0.00      0.00      0.00         5
+    Pakistan       0.00      0.00      0.00         1
+   Sri Lanka       0.50      1.00      0.67        16
+ West Indies       0.00      0.00      0.00         2
+        tied       0.00      0.00      0.00         1
+
+    accuracy                           0.51        35
+   macro avg       0.15      0.21      0.17        35
+weighted avg       0.29      0.51      0.36        35
+
+
+
+Random Forest Classifier:
+Best Parameters: {'classifier__n_estimators': 100}
+Accuracy: 0.4
+Precision: 0.29850931677018633
+Recall: 0.4
+F1 Score: 0.33703296703296703
+Classification Report:
+              precision    recall  f1-score   support
+
+ Afghanistan       0.00      0.00      0.00         0
+   Australia       0.50      0.33      0.40         3
+  Bangladesh       0.00      0.00      0.00         0
+     England       0.00      0.00      0.00         4
+       India       0.20      0.33      0.25         3
+ New Zealand       0.00      0.00      0.00         5
+    Pakistan       0.00      0.00      0.00         1
+South Africa       0.00      0.00      0.00         0
+   Sri Lanka       0.52      0.75      0.62        16
+ West Indies       0.00      0.00      0.00         2
+        tied       0.00      0.00      0.00         1
+
+    accuracy                           0.40        35
+   macro avg       0.11      0.13      0.12        35
+weighted avg       0.30      0.40      0.34        35
+
+
+
+Gradient Boosting Classifier:
+Best Parameters: {'classifier__learning_rate': 0.01, 'classifier__n_estimators': 50}
+Accuracy: 0.45714285714285713
+Precision: 0.2714285714285714
+Recall: 0.45714285714285713
+F1 Score: 0.3324223602484472
+Classification Report:
+              precision    recall  f1-score   support
+
+ Afghanistan       0.00      0.00      0.00         0
+   Australia       0.00      0.00      0.00         3
+     England       0.00      0.00      0.00         4
+       India       0.50      0.33      0.40         3
+ New Zealand       0.00      0.00      0.00         5
+    Pakistan       0.00      0.00      0.00         1
+South Africa       0.00      0.00      0.00         0
+   Sri Lanka       0.50      0.94      0.65        16
+ West Indies       0.00      0.00      0.00         2
+        tied       0.00      0.00      0.00         1
+
+    accuracy                           0.46        35
+   macro avg       0.10      0.13      0.11        35
+weighted avg       0.27      0.46      0.33        35
+
+
+
+Decision Tree Classifier:
+Best Parameters: {'classifier__max_depth': 5}
+Accuracy: 0.4
+Precision: 0.36294117647058827
+Recall: 0.4
+F1 Score: 0.3687322201607916
+Classification Report:
+              precision    recall  f1-score   support
+
+   Australia       0.25      0.33      0.29         3
+     England       0.00      0.00      0.00         4
+       India       0.50      0.33      0.40         3
+ New Zealand       0.00      0.00      0.00         5
+    Pakistan       0.10      1.00      0.18         1
+South Africa       0.00      0.00      0.00         0
+   Sri Lanka       0.65      0.69      0.67        16
+ West Indies       0.00      0.00      0.00         2
+        tied       0.00      0.00      0.00         1
+
+    accuracy                           0.40        35
+   macro avg       0.17      0.26      0.17        35
+weighted avg       0.36      0.40      0.37        35
+
+
+
+Support Vector Classifier:
+Best Parameters: {'classifier__C': 1, 'classifier__gamma': 1}
+Accuracy: 0.45714285714285713
+Precision: 0.2571428571428571
+Recall: 0.45714285714285713
+F1 Score: 0.3267080745341615
+Classification Report:
+              precision    recall  f1-score   support
+
+   Australia       0.33      0.33      0.33         3
+     England       0.00      0.00      0.00         4
+       India       0.00      0.00      0.00         3
+ New Zealand       0.00      0.00      0.00         5
+    Pakistan       0.00      0.00      0.00         1
+   Sri Lanka       0.50      0.94      0.65        16
+ West Indies       0.00      0.00      0.00         2
+        tied       0.00      0.00      0.00         1
+
+    accuracy                           0.46        35
+   macro avg       0.10      0.16      0.12        35
+weighted avg       0.26      0.46      0.33        35
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[ ]:
+
+
+
+
